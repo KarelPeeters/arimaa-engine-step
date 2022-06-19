@@ -206,7 +206,6 @@ assert_eq!(
 ```
 */
 
-#![feature(test)]
 #![allow(clippy::inconsistent_digit_grouping)]
 #![allow(clippy::unusual_byte_groupings)]
 

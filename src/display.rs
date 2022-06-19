@@ -156,8 +156,6 @@ pub fn convert_piece_to_letter(piece: &Piece, is_p1: bool) -> String {
 
 #[cfg(test)]
 mod tests {
-    extern crate test;
-
     use super::super::{take_actions, GameState, Piece};
 
     fn place_major_pieces(game_state: GameState) -> GameState {
