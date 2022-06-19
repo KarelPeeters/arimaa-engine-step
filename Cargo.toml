@@ -1,0 +1,19 @@
+[package]
+name = "arimaa_engine_step"
+description = "A step based engine for the board game Arimaa."
+version = "1.0.0"
+authors = ["James Harmon <JamesMHarmon@gmail.com>"]
+repository = "https://github.com/JamesMHarmon/arimaa-engine-step"
+keywords = ["arimaa"]
+readme = "README.md"
+edition = "2021"
+license = "MIT"
+
+[lib]
+name = "arimaa_engine_step"
+
+[dependencies]
+anyhow = "1.0"
+itertools = "0.10"
+regex = "1.3"
+log = "0.4"
