@@ -2,7 +2,7 @@ use anyhow::anyhow;
 use std::fmt;
 use std::str::FromStr;
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Ord, PartialOrd)]
 pub enum Direction {
     Up,
     Right,
