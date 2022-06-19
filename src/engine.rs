@@ -163,14 +163,13 @@ impl PieceBoard {
     /// Makes the specified move action.
     fn take_action(&self, move_action: &Action) -> (PieceBoardState, bool) {
         let mut piece_board_state = self.0.clone();
-        let animal_was_trapped;
 
-        if let Action::Move(square, direction) = move_action {
+        let animal_was_trapped = if let Action::Move(square, direction) = move_action {
             Self::move_piece(&mut piece_board_state, square, direction);
-            animal_was_trapped = Self::remove_trapped_pieces(&mut piece_board_state);
+            Self::remove_trapped_pieces(&mut piece_board_state)
         } else {
             panic!("Action must be of type Action::Move");
-        }
+        };
 
         (piece_board_state, animal_was_trapped)
     }
@@ -521,14 +520,7 @@ impl GameState {
     ) {
         let non_frozen_pieces = self.curr_player_non_frozen_pieces(piece_board);
 
-        for direction in [
-            Direction::Up,
-            Direction::Right,
-            Direction::Down,
-            Direction::Left,
-        ]
-        .iter()
-        {
+        for direction in Direction::ALL.iter() {
             let unoccupied_directions = can_move_in_direction(direction, piece_board);
             let invalid_rabbit_moves = self.invalid_rabbit_moves(direction, piece_board);
             let valid_curr_piece_moves =
@@ -552,14 +544,7 @@ impl GameState {
                 let lesser_opp_pieces = self.lesser_pieces(piece, piece_board) & opp_piece_mask;
                 let square_bit = square.as_bit_board();
 
-                for direction in [
-                    Direction::Up,
-                    Direction::Right,
-                    Direction::Down,
-                    Direction::Left,
-                ]
-                .iter()
-                {
+                for direction in Direction::ALL.iter() {
                     if shift_pieces_in_direction(lesser_opp_pieces, direction) & square_bit != 0 {
                         let source_opp_piece_square = Square::from_bit_board(
                             shift_pieces_in_opp_direction(square_bit, direction),
@@ -587,14 +572,7 @@ impl GameState {
                     self.threatened_pieces(predator_piece_mask, opp_piece_mask, piece_board);
 
                 if opp_threatened_pieces != 0 {
-                    for direction in [
-                        Direction::Up,
-                        Direction::Right,
-                        Direction::Down,
-                        Direction::Left,
-                    ]
-                    .iter()
-                    {
+                    for direction in Direction::ALL.iter() {
                         let unoccupied_directions = can_move_in_direction(direction, piece_board);
                         let valid_push_moves = unoccupied_directions & opp_threatened_pieces;
 
@@ -617,14 +595,7 @@ impl GameState {
         let square_bit = square.as_bit_board();
 
         let mut valid_actions = vec![];
-        for direction in [
-            Direction::Up,
-            Direction::Right,
-            Direction::Down,
-            Direction::Left,
-        ]
-        .iter()
-        {
+        for direction in Direction::ALL.iter() {
             let pushing_piece_bit = shift_pieces_in_opp_direction(square_bit, direction)
                 & curr_player_non_frozen_piece_mask;
             if pushing_piece_bit != 0
@@ -800,10 +771,10 @@ impl GameState {
         let play_phase = self.unwrap_play_phase();
         let step = play_phase.step();
 
-        let mut previous_piece_boards_this_move = Vec::with_capacity(step + 1);
-        previous_piece_boards_this_move.extend(play_phase.previous_piece_boards_this_move.iter().cloned());
-        previous_piece_boards_this_move.push(self.piece_board.clone());
-        previous_piece_boards_this_move
+        let mut previous_piece_boards = Vec::with_capacity(step + 1);
+        previous_piece_boards.extend(play_phase.previous_piece_boards_this_move.iter().cloned());
+        previous_piece_boards.push(self.piece_board.clone());
+        previous_piece_boards
     }
 
     fn next_push_pull_state(&self, square: &Square, direction: &Direction) -> PushPullState {

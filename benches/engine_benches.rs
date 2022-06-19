@@ -1,5 +1,5 @@
-use criterion::{Bencher, black_box, Criterion, criterion_group, criterion_main};
-use arimaa_engine_step::{GameState, take_actions};
+use arimaa_engine_step::{take_actions, GameState};
+use criterion::{black_box, criterion_group, criterion_main, Bencher, Criterion};
 
 fn bench_valid_actions(b: &mut Bencher) {
     let game_state: GameState = "
@@ -16,8 +16,8 @@ fn bench_valid_actions(b: &mut Bencher) {
              +-----------------+
                a b c d e f g h
            "
-        .parse()
-        .unwrap();
+    .parse()
+    .unwrap();
 
     let game_state = black_box(game_state);
 

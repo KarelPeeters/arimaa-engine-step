@@ -25,16 +25,7 @@ impl Zobrist {
         hash ^= STEP_VALUES[step_num];
 
         for is_p1 in [true, false].iter() {
-            for piece in [
-                Piece::Elephant,
-                Piece::Camel,
-                Piece::Horse,
-                Piece::Dog,
-                Piece::Cat,
-                Piece::Rabbit,
-            ]
-            .iter()
-            {
+            for piece in Piece::ALL.iter() {
                 let piece_bits = piece_board.bits_for_piece(*piece, *is_p1);
                 for square in map_bit_board_to_squares(piece_bits) {
                     hash ^= piece_value(square, *piece, *is_p1);
@@ -121,16 +112,7 @@ fn piece_board_value(prev_piece_board: &PieceBoardState, new_piece_board: &Piece
     let mut value = 0;
 
     for is_p1 in [true, false].iter() {
-        for piece in [
-            Piece::Elephant,
-            Piece::Camel,
-            Piece::Horse,
-            Piece::Dog,
-            Piece::Cat,
-            Piece::Rabbit,
-        ]
-        .iter()
-        {
+        for piece in Piece::ALL.iter() {
             let prev_piece_bits = prev_piece_board.bits_for_piece(*piece, *is_p1);
             let new_piece_bits = new_piece_board.bits_for_piece(*piece, *is_p1);
             let diff_bits = prev_piece_bits ^ new_piece_bits;
