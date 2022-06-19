@@ -1,12 +1,12 @@
 macro_rules! shift_up {
     ($exp:expr) => {
-        $exp >> BOARD_WIDTH
+        $exp >> $crate::constants::BOARD_WIDTH
     };
 }
 
 macro_rules! shift_down {
     ($exp:expr) => {
-        $exp << BOARD_WIDTH
+        $exp << $crate::constants::BOARD_WIDTH
     };
 }
 
@@ -30,19 +30,19 @@ macro_rules! shift_pieces_up {
 
 macro_rules! shift_pieces_right {
     ($exp:expr) => {
-        shift_right!($exp & !RIGHT_COLUMN_MASK)
+        shift_right!($exp & !$crate::bit_mask::RIGHT_COLUMN_MASK)
     };
 }
 
 macro_rules! shift_pieces_down {
     ($exp:expr) => {
-        shift_down!($exp & !BOTTOM_ROW_MASK)
+        shift_down!($exp & !$crate::bit_mask::BOTTOM_ROW_MASK)
     };
 }
 
 macro_rules! shift_pieces_left {
     ($exp:expr) => {
-        shift_left!($exp & !LEFT_COLUMN_MASK)
+        shift_left!($exp & !$crate::bit_mask::LEFT_COLUMN_MASK)
     };
 }
 

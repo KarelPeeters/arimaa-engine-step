@@ -1,7 +1,7 @@
 use super::bit_manip::first_set_bit;
 use super::bit_mask::*;
 use super::{map_bit_board_to_squares, Action, Direction, Piece, Square};
-use super::{List, Terminal, Zobrist, BOARD_WIDTH};
+use super::{List, Terminal, Zobrist};
 use std::hash::{Hash, Hasher};
 
 #[derive(Hash, Eq, PartialEq, Clone, Copy, Debug)]
