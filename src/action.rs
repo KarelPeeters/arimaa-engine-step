@@ -3,7 +3,7 @@ use anyhow::anyhow;
 use std::fmt;
 use std::str::FromStr;
 
-#[derive(Hash, Clone, Eq, PartialEq)]
+#[derive(Hash, Clone, Copy, Eq, PartialEq)]
 pub enum Action {
     Place(Piece),
     Move(Square, Direction),
