@@ -801,9 +801,7 @@ impl GameState {
         let step = play_phase.step();
 
         let mut previous_piece_boards_this_move = Vec::with_capacity(step + 1);
-        play_phase
-            .previous_piece_boards_this_move
-            .clone_into(&mut previous_piece_boards_this_move);
+        previous_piece_boards_this_move.extend(play_phase.previous_piece_boards_this_move.iter().cloned());
         previous_piece_boards_this_move.push(self.piece_board.clone());
         previous_piece_boards_this_move
     }
