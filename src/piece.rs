@@ -12,6 +12,17 @@ pub enum Piece {
     Elephant,
 }
 
+impl Piece {
+    pub const ALL: [Piece; 6] = [
+        Piece::Rabbit,
+        Piece::Cat,
+        Piece::Dog,
+        Piece::Horse,
+        Piece::Camel,
+        Piece::Elephant,
+    ];
+}
+
 impl fmt::Display for Piece {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let piece = match self {

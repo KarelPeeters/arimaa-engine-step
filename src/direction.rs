@@ -10,6 +10,15 @@ pub enum Direction {
     Left,
 }
 
+impl Direction {
+    pub const ALL: [Direction; 4] = [
+        Direction::Up,
+        Direction::Right,
+        Direction::Down,
+        Direction::Left,
+    ];
+}
+
 impl fmt::Display for Direction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let dir = match self {
