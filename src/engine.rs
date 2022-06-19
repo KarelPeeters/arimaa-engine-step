@@ -1209,4 +1209,8 @@ impl PlayPhase {
     pub fn step(&self) -> usize {
         self.previous_piece_boards_this_move.len()
     }
+
+    pub fn hash_history(&self) -> &List<Zobrist> {
+        &self.hash_history
+    }
 }
