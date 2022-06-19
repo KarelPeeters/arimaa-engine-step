@@ -8,8 +8,8 @@
 [crates-url]: https://crates.io/crates/arimaa-engine-step
 [mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [mit-url]: https://github.com/JamesMHarmon/arimaa-engine-step/blob/master/LICENSE
-[docs-badge]: https://docs.rs/arimaa-engine-step/badge.svg
-[docs-url]: https://docs.rs/arimaa-engine-step/
+[docs-badge]: https://docs.rs/arimaa_engine_step/badge.svg
+[docs-url]: https://docs.rs/arimaa_engine_step/latest/arimaa_engine_step/
 
 ## Overview
 
