@@ -1,6 +1,7 @@
-use anyhow::Result;
 use std::fmt::{self, Display, Formatter};
 use std::str::FromStr;
+
+use anyhow::{Error, Result};
 
 use super::zobrist::Zobrist;
 use super::{GameState, Phase, PieceBoard, PieceBoardState, PlayPhase};
@@ -46,22 +47,8 @@ impl FromStr for GameState {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self> {
-        let lines: Vec<_> = s
-            .split('|')
-            .enumerate()
-            .filter(|(i, _)| i % 2 == 1)
-            .map(|(_, s)| s)
-            .collect();
-        let regex = regex::Regex::new(r"^\s*(\d+)([gswb])").unwrap();
-
-        let (move_number, p1_turn_to_move) = regex
-            .captures(s.split('|').find(|_| true).unwrap())
-            .map_or((2, true), |c| {
-                (
-                    c.get(1).unwrap().as_str().parse().unwrap(),
-                    c.get(2).unwrap().as_str() != "s" && c.get(2).unwrap().as_str() != "b",
-                )
-            });
+        let short_regex = regex::Regex::new(r#"^([gsbw]) \[(\w{64})\]$"#).unwrap();
+        let long_regex = regex::Regex::new(r"^\s*(\d+)([gswb])").unwrap();
 
         let mut p1_pieces = 0;
         let mut elephants = 0;
@@ -71,34 +58,71 @@ impl FromStr for GameState {
         let mut cats = 0;
         let mut rabbits = 0;
 
-        for (row_idx, line) in lines.iter().enumerate() {
-            for (col_idx, charr) in line
-                .chars()
+        let mut put_piece_at = |square: Square, c: char| {
+            if let Some((piece, is_p1)) = convert_char_to_piece(c) {
+                let square_bit = square.as_bit_board();
+
+                match piece {
+                    Piece::Elephant => elephants |= square_bit,
+                    Piece::Camel => camels |= square_bit,
+                    Piece::Horse => horses |= square_bit,
+                    Piece::Dog => dogs |= square_bit,
+                    Piece::Cat => cats |= square_bit,
+                    Piece::Rabbit => rabbits |= square_bit,
+                }
+
+                if is_p1 {
+                    p1_pieces |= square_bit;
+                }
+            }
+        };
+
+        let (move_number, p1_turn_to_move) = if let Some(captures) = short_regex.captures(s) {
+            let p1_turn_to_move = match captures.get(1).unwrap().as_str() {
+                "g" | "w" => true,
+                "b" | "s" => false,
+                s => return Err(Error::msg(format!("Invalid side to move '{}'", s))),
+            };
+
+            for (i, c) in captures.get(1).unwrap().as_str().chars().enumerate() {
+                let square = Square::from_index((64 - 1 - i) as u8);
+                put_piece_at(square, c)
+            }
+
+            (0, p1_turn_to_move)
+        } else {
+            let lines: Vec<_> = s
+                .split('|')
                 .enumerate()
                 .filter(|(i, _)| i % 2 == 1)
                 .map(|(_, s)| s)
-                .enumerate()
-            {
-                let idx = (row_idx * BOARD_WIDTH + col_idx) as u8;
-                let square = Square::from_index(idx);
-                if let Some((piece, is_p1)) = convert_char_to_piece(charr) {
-                    let square_bit = square.as_bit_board();
+                .collect();
 
-                    match piece {
-                        Piece::Elephant => elephants |= square_bit,
-                        Piece::Camel => camels |= square_bit,
-                        Piece::Horse => horses |= square_bit,
-                        Piece::Dog => dogs |= square_bit,
-                        Piece::Cat => cats |= square_bit,
-                        Piece::Rabbit => rabbits |= square_bit,
-                    }
+            let (move_number, p1_turn_to_move) = long_regex
+                .captures(s.split('|').find(|_| true).unwrap())
+                .map_or((2, true), |c| {
+                    (
+                        c.get(1).unwrap().as_str().parse().unwrap(),
+                        c.get(2).unwrap().as_str() != "s" && c.get(2).unwrap().as_str() != "b",
+                    )
+                });
 
-                    if is_p1 {
-                        p1_pieces |= square_bit;
-                    }
+            for (row_idx, line) in lines.iter().enumerate() {
+                for (col_idx, c) in line
+                    .chars()
+                    .enumerate()
+                    .filter(|(i, _)| i % 2 == 1)
+                    .map(|(_, s)| s)
+                    .enumerate()
+                {
+                    let idx = (row_idx * BOARD_WIDTH + col_idx) as u8;
+                    let square = Square::from_index(idx);
+                    put_piece_at(square, c)
                 }
             }
-        }
+
+            (move_number, p1_turn_to_move)
+        };
 
         let piece_board =
             PieceBoard::new(p1_pieces, elephants, camels, horses, dogs, cats, rabbits);
