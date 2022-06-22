@@ -220,6 +220,7 @@ pub mod constants;
 pub mod direction;
 pub mod display;
 pub mod engine;
+pub mod full_move;
 pub mod linked_list;
 pub mod macros;
 pub mod piece;
