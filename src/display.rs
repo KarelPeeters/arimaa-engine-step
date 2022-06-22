@@ -116,7 +116,7 @@ impl FromStr for GameState {
     }
 }
 
-fn convert_char_to_piece(c: char) -> Option<(Piece, bool)> {
+pub fn convert_char_to_piece(c: char) -> Option<(Piece, bool)> {
     let is_p1 = c.is_uppercase();
 
     let piece = match c {
