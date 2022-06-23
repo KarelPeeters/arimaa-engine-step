@@ -2,6 +2,7 @@
 mod tests {
     use super::super::{take_actions, PushPullState, Terminal};
     use super::super::{GameState, Piece, Square};
+    use std::str::FromStr;
 
     fn place_major_pieces(game_state: GameState) -> GameState {
         take_actions!(game_state => h, c, d, m, e, d, c, h)
@@ -18,6 +19,23 @@ mod tests {
 
         let game_state = place_major_pieces(game_state);
         place_8_rabbits(game_state)
+    }
+
+    #[test]
+    fn test_parse_short_form() {
+        let initial = initial_play_state();
+
+        let short_str = "g [hcdmedchrrrrrrrr                                RRRRRRRRHCDMEDCH]";
+
+        let short_regex = regex::Regex::new(r#"^([gsbw]) \[(.{64})\]$"#).unwrap();
+        println!("{:?}", short_regex.captures(short_str));
+
+        let parsed = GameState::from_str(short_str).unwrap();
+
+        println!("{}", initial);
+        println!("{}", parsed);
+
+        assert_eq!(parsed, initial);
     }
 
     #[test]

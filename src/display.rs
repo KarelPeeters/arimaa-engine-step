@@ -47,7 +47,7 @@ impl FromStr for GameState {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self> {
-        let short_regex = regex::Regex::new(r#"^([gsbw]) \[(\w{64})\]$"#).unwrap();
+        let short_regex = regex::Regex::new(r#"^([gsbw]) \[(.{64})\]$"#).unwrap();
         let long_regex = regex::Regex::new(r"^\s*(\d+)([gswb])").unwrap();
 
         let mut p1_pieces = 0;
@@ -84,8 +84,8 @@ impl FromStr for GameState {
                 s => return Err(Error::msg(format!("Invalid side to move '{}'", s))),
             };
 
-            for (i, c) in captures.get(1).unwrap().as_str().chars().enumerate() {
-                let square = Square::from_index((64 - 1 - i) as u8);
+            for (i, c) in captures.get(2).unwrap().as_str().chars().enumerate() {
+                let square = Square::from_index(i as u8);
                 put_piece_at(square, c)
             }
 
